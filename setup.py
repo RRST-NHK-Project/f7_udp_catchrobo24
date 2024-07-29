@@ -24,6 +24,7 @@ setup(
         '4_omni = f7_udp.W4_Omni_Driver:main',
         'setoshio = f7_udp.yolov8_setoshio_pub:main',
         'setoshio_gui = f7_udp.yolo_setoshio_gui:main',
+        'cr24_main = f7_udp.cr24_main:main',
         ],
     },
 )

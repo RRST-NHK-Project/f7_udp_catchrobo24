@@ -62,55 +62,9 @@ class Listener(Node):
         L3 = ps4_msg.buttons[10]
         R3 = ps4_msg.buttons[11]
 
-        if UP == 1:
-            LS_Y = 1.0
+        data[1] = 90
+        #time.sleep(10)
 
-        if DOWN == 1:
-            LS_Y = -1.0
-
-        if LEFT == 1:
-            LS_X = 1.0
-
-        if RIGHT == 1:
-            LS_X = -1.0
-
-        rad = math.atan2(LS_Y, LS_X)
-        vx = math.cos(rad)
-        vy = math.sin(rad)
-
-        v1 = math.sin(rad - math.pi / 4) * sp_omni
-        v2 = math.sin(rad - 3 * math.pi / 4) * sp_omni
-        v3 = math.sin(rad - 5 * math.pi / 4) * sp_omni
-        v4 = math.sin(rad - 7 * math.pi / 4) * sp_omni
-
-        if R2 == 1:
-            v1 = -1.0 * sp_yaw
-            v2 = -1.0 * sp_yaw
-            v3 = -1.0 * sp_yaw
-            v4 = -1.0 * sp_yaw
-
-        if L2 == 1:
-            v1 = 1.0 * sp_yaw
-            v2 = 1.0 * sp_yaw
-            v3 = 1.0 * sp_yaw
-            v4 = 1.0 * sp_yaw
-
-        if (
-            (math.fabs(LS_X) <= deadzone)
-            and (math.fabs(LS_Y) <= deadzone)
-            and R2 == 0
-            and L2 == 0
-        ):
-            v1 = 0
-            v2 = 0
-            v3 = 0
-            v4 = 0
-
-        # print(v1, v2, v3)
-        data[1] = v1 * (rpm_limit + 1)
-        data[2] = v2 * (rpm_limit + 1)
-        data[3] = v3 * (rpm_limit + 1)
-        data[4] = v4 * (rpm_limit + 1)
 
         udp.send()  # 関数実行
 

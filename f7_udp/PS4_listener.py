@@ -31,7 +31,7 @@ class Listener(Node):
         CROSS = ps4_msg.buttons[1]
         CIRCLE = ps4_msg.buttons[2]
         TRIANGLE = ps4_msg.buttons[3]
-        SAUARE = ps4_msg.buttons[0]
+        SQUARE = ps4_msg.buttons[0]
     
         LEFT = ps4_msg.axes[12] == 1.0
         RIGHT = ps4_msg.axes[12] == -1.0
@@ -53,7 +53,7 @@ class Listener(Node):
 
 
 
-        if SAUARE  == 1:
+        if SQUARE  == 1:
             print("SAUARE ") 
         
         if CROSS == 1:
@@ -103,6 +103,7 @@ class Listener(Node):
         
         if  PS == 1:
             print("PS") 
+            
         
 
 
