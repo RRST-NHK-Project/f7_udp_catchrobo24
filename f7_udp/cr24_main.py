@@ -62,7 +62,12 @@ class Listener(Node):
         L3 = ps4_msg.buttons[10]
         R3 = ps4_msg.buttons[11]
 
-        data[1] = 90
+        
+        if CIRCLE:
+            data[1] = 90
+            
+        if SQUARE:
+            data[1] = -90
         #time.sleep(10)
 
 
