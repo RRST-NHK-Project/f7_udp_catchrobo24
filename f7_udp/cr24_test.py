@@ -6,7 +6,6 @@ from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
-from std_msgs.msg import Int32MultiArray
 
 from socket import *
 import time
@@ -26,34 +25,49 @@ deadzone = 0.3  # adjust DS4 deadzone
 class Listener(Node):
 
     def __init__(self):
-        super().__init__("Setoshio_handler")
+        super().__init__("listener")
         self.subscription = self.create_subscription(
-            Int32MultiArray,'setoshio_pub', self.listener_callback, 10
+            Joy, "joy", self.listener_callback, 10
         )
         self.subscription  # prevent unused variable warning
 
-    def listener_callback(self, msg):
-        
-        void = msg.data[0] == -1 
-        ebi = msg.data[0] == 0
-        nori = msg.data[0] == 1
-        yuzu = msg.data[0] == 2
+    def listener_callback(self, ps4_msg):
+        LS_X = ps4_msg.axes[0]
+        LS_Y = ps4_msg.axes[1]
+        # RS_X = (-1) * ps4_msg.axes[2]
+        # RS_Y = ps4_msg.axes[5]
 
-        if void:
-            print("void")
-            data[1] = 0
+        # print(LS_X, LS_Y, RS_X, RS_Y)
+
+        CROSS = ps4_msg.buttons[1]
+        CIRCLE = ps4_msg.buttons[2]
+        TRIANGLE = ps4_msg.buttons[3]
+        SQUARE = ps4_msg.buttons[0]
+
+        LEFT = ps4_msg.axes[12] == 1.0
+        RIGHT = ps4_msg.axes[12] == -1.0
+        UP = ps4_msg.axes[13] == 1.0
+        DOWN = ps4_msg.axes[13] == -1.0
+
+        L1 = ps4_msg.buttons[4]
+        R1 = ps4_msg.buttons[5]
+
+        L2 = ps4_msg.buttons[6]
+        R2 = ps4_msg.buttons[7]
+
+        SHARE = ps4_msg.buttons[8]
+        OPTION = ps4_msg.buttons[9]
+        PS = ps4_msg.buttons[12]
+
+        L3 = ps4_msg.buttons[10]
+        R3 = ps4_msg.buttons[11]
+
         
-        if ebi:
-            print("ebi")
-            data[1] = 30
+        if CIRCLE:
+            data[1] = 180
             
-        if nori:
-            print("nori")
-            data[1] = 60
-            
-        if yuzu:
-            print("nori")
-            data[1] = 90
+        if SQUARE:
+            data[1] = -90
         #time.sleep(10)
 
 
