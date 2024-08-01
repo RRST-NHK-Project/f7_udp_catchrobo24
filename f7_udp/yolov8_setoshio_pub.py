@@ -18,7 +18,7 @@ ov_model = YOLO(
 )  # 絶対パス
 
 # Webカメラの設定
-cap = cv2.VideoCapture(2)  # builtin_cam:0 ext_cam:2
+cap = cv2.VideoCapture(0)  # builtin_cam:0 ext_cam:2
 #cap.set(cv2.CAP_PROP_BRIGHTNESS, 16)
 #cap.set(cv2.CAP_PROP_EXPOSURE, -16)  # 0 ~ -16
 

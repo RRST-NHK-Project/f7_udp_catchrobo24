@@ -26,6 +26,7 @@ setup(
         'setoshio_gui = f7_udp.yolo_setoshio_gui:main',
         'cr24_main = f7_udp.cr24_main:main',
         'cr24_test = f7_udp.cr24_test:main',
+        'cr24_gui = f7_udp.cr24_gui:main',
         ],
     },
 )
