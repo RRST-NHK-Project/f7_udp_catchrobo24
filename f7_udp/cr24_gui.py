@@ -11,34 +11,8 @@ import flet as ft
 
 
 msg = Int32MultiArray()
-
-
-
-def gui_main(page: ft.Page):
-    page.title = "サンプルプログラム"  # タイトル
-    page.window_width = 600  # 幅
-    page.window_height = 300  # 高さ
-    page.theme = ft.Theme(color_scheme_seed="green")
-
-    # 部品を配置する
-    page.add(
-        ft.Column(
-            [
-                ft.Text("ここは1行目"),
-                ft.Row(
-                    [
-                        ft.Text("ここは2行目"),
-                        ft.TextField(hint_text="文字を入力してください"),
-                    ]
-                ),
-                ft.Row([ft.ElevatedButton("OK"), ft.ElevatedButton("キャンセル")]),
-            ]
-        )
-    )
-    
-ft.app(target=gui_main)
-
-
+msg.data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+mode = False
 
 class cr24_GUI(Node):
 
@@ -58,9 +32,194 @@ class cr24_GUI(Node):
 
         # -------------------------Publish-------------------------#
 
-        msg.data = [-1, -1, -1, -1, -1]
 
-        self.publisher_.publish(msg)
+
+        def gui_main(page: ft.Page):
+            page.title = "CR24_Control_Panel"  # タイトル
+            page.window_width = 300  # 幅
+            page.window_height = 600  # 高さ
+            page.bgcolor = ft.colors.RED_100
+            text = [
+                0,
+                ft.Text(value="0",size=25,color=ft.colors.RED),
+                ft.Text(value="0",size=25,color=ft.colors.BLUE),
+                ft.Text(value="0",size=25,color=ft.colors.WHITE),
+                ft.Text(value="0",size=25,color=ft.colors.RED),
+                ft.Text(value="0",size=25,color=ft.colors.BLUE),
+                ft.Text(value="0",size=25,color=ft.colors.WHITE),
+                ft.Text(value="0",size=25,color=ft.colors.RED),
+                ft.Text(value="0",size=25,color=ft.colors.BLUE),
+                ft.Text(value="0",size=25,color=ft.colors.WHITE),
+                ft.Text(value="0",size=25,color=ft.colors.RED),
+                ft.Text(value="0",size=25,color=ft.colors.BLUE),
+                ft.Text(value="0",size=25,color=ft.colors.WHITE),
+                ft.Text(value="0",size=25,color=ft.colors.RED),
+                ft.Text(value="0",size=25,color=ft.colors.BLUE),
+                ft.Text(value="0",size=25,color=ft.colors.WHITE),
+                ft.Text(value="0",size=25,color=ft.colors.RED),
+                ft.Text(value="0",size=25,color=ft.colors.BLUE),
+                ft.Text(value="0",size=25,color=ft.colors.WHITE),
+            ]
+            
+            def mode_change(e):
+                global mode
+                mode = not mode
+                if mode == False:
+                    e.page.bgcolor = ft.colors.RED_100
+                if mode == True:
+                    e.page.bgcolor = ft.colors.BLUE_100
+                e.page.update()
+                msg.data[0] = mode
+                self.publisher_.publish(msg)
+                
+
+
+            def increase(e):
+                i = e.control.data
+                msg.data[i] = msg.data[i] + 1
+                text[i].value = str(msg.data[i])
+                e.page.update()
+                self.publisher_.publish(msg)
+
+            def decrease(e):
+                i = e.control.data
+                msg.data[i] = msg.data[i] - 1
+                text[i].value = str(msg.data[i])
+                e.page.update()
+                self.publisher_.publish(msg)
+            
+            # 部品を配置する
+            page.add(
+                ft.Column(
+                    [
+                        ft.Row([ft.ElevatedButton("mode", on_click=mode_change)]),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=1, on_click=decrease),
+                                text[1],
+                                ft.IconButton(ft.icons.ADD, data=1, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=4, on_click=decrease),
+                                text[4],
+                                ft.IconButton(ft.icons.ADD, data=4, on_click=increase),
+                            
+                            ]
+                        ),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=2, on_click=decrease),
+                                text[2],
+                                ft.IconButton(ft.icons.ADD, data=2, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=5, on_click=decrease),
+                                text[5],
+                                ft.IconButton(ft.icons.ADD, data=5, on_click=increase),
+                            ]
+                        ),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=3, on_click=decrease),
+                                text[3],
+                                ft.IconButton(ft.icons.ADD, data=3, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=6, on_click=decrease),
+                                text[6],
+                                ft.IconButton(ft.icons.ADD, data=6, on_click=increase),
+                            ]
+                        ),
+                        ft.Text("      "),
+                        
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=7, on_click=decrease),
+                                text[7],
+                                ft.IconButton(ft.icons.ADD, data=7, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=10, on_click=decrease),
+                                text[10],
+                                ft.IconButton(ft.icons.ADD, data=10, on_click=increase),
+                            ]
+                        ),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=8, on_click=decrease),
+                                text[8],
+                                ft.IconButton(ft.icons.ADD, data=8, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=11, on_click=decrease),
+                                text[11],
+                                ft.IconButton(ft.icons.ADD, data=11, on_click=increase),
+                            ]
+                        ),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=9, on_click=decrease),
+                                text[9],
+                                ft.IconButton(ft.icons.ADD, data=9, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=12, on_click=decrease),
+                                text[12],
+                                ft.IconButton(ft.icons.ADD, data=12, on_click=increase),
+                            ]
+                        ),
+                        ft.Text("      "),
+                        
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=13, on_click=decrease),
+                                text[13],
+                                ft.IconButton(ft.icons.ADD, data=13, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=16, on_click=decrease),
+                                text[16],
+                                ft.IconButton(ft.icons.ADD, data=16, on_click=increase),
+                            ]
+                        ),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=14, on_click=decrease),
+                                text[14],
+                                ft.IconButton(ft.icons.ADD, data=14, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=17, on_click=decrease),
+                                text[17],
+                                ft.IconButton(ft.icons.ADD, data=17, on_click=increase),
+                            ]
+                        ),
+                        ft.Row(
+                            [
+                                ft.IconButton(ft.icons.REMOVE ,data=15, on_click=decrease),
+                                text[15],
+                                ft.IconButton(ft.icons.ADD, data=15, on_click=increase),
+                                
+                                ft.Text("      "),
+                                
+                                ft.IconButton(ft.icons.REMOVE ,data=18, on_click=decrease),
+                                text[18],
+                                ft.IconButton(ft.icons.ADD, data=18, on_click=increase),
+                            ]
+                        ),
+                    ]
+                )
+            )
+        ft.app(target=gui_main)
+
 
         # self.get_logger().info('Publishing: "%s"' % msg)
 
@@ -75,7 +234,6 @@ def main(args=None):
     rclpy.init(args=args)
     CR24_GUI = cr24_GUI()
     rclpy.spin(CR24_GUI)
-    
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
@@ -86,3 +244,13 @@ def main(args=None):
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+    
+    
+
