@@ -80,7 +80,7 @@ class setoshio_pub(Node):
                 cls_and_x1_sorted = sorted(
                     cls_and_x1, key=lambda x: x[1]
                 )  # sort with x1
-                print(cls_and_x1_sorted)
+                #print(cls_and_x1_sorted)
 
                 # -------------------------Publish-------------------------#
                 """
@@ -109,7 +109,7 @@ class setoshio_pub(Node):
 
                 # print(str(cls_and_x1_sorted))
             except IndexError as e:  # To avoid IndexError stops program
-                print(e)
+                #print(e)
                 msg.data = [-1, -1, -1, -1, -1]
                 self.publisher_.publish(msg)
 

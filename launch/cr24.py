@@ -12,6 +12,13 @@ def generate_launch_description():
         ),
         Node(
             package='f7_udp',
+            executable='setoshio',
+            name='main',
+            output='screen',
+            emulate_tty=True
+        ),
+        Node(
+            package='f7_udp',
             executable='cr24_main',
             name='main',
             output='screen',
@@ -19,8 +26,8 @@ def generate_launch_description():
         ),
         Node(
             package='f7_udp',
-            executable='setoshio',
-            name='main',
+            executable='cr24_gui',
+            name='gui',
             output='screen',
             emulate_tty=True
         ),
