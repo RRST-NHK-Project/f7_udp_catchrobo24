@@ -75,6 +75,9 @@ class cr24_GUI(Node):
                 msg.data[0] = mode
                 self.publisher_.publish(msg)
 
+            def ems(e):
+                page.window.destroy()
+
             def increase(e):
                 i = e.control.data
                 msg.data[i] = msg.data[i] + 1
@@ -96,7 +99,9 @@ class cr24_GUI(Node):
                         ft.Row(
                             [
                                 ft.ElevatedButton("mode", on_click=mode_change),
-                            ]
+                                ft.Text("          "),
+                                ft.ElevatedButton("EMS", icon="warning_amber"),
+                            ],
                         ),
                         ft.Row(
                             [

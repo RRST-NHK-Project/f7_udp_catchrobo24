@@ -26,7 +26,11 @@ deadzone = 0.3  # adjust DS4 deadzone
 gui_input = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 mode = 0
 
-target = 1#どのパックにワークをシュートするか1~6
+ebi_selector = 1  # えびのシュートはどこまで完了しているか
+nori_selector = 1  # のりのシュートはどこまで完了しているか
+yuzu_selector = 1  # ゆずのシュートはどこまで完了しているか
+
+target = 1  # どのパックにワークをシュートするか1~6
 
 
 class Listener(Node):
@@ -40,26 +44,28 @@ class Listener(Node):
 
     def yolo_callback(self, yolo_msg):
 
+        global target
+
         void = yolo_msg.data[0] == -1
         ebi = yolo_msg.data[0] == 0
         nori = yolo_msg.data[0] == 1
         yuzu = yolo_msg.data[0] == 2
 
         if void:
-            print("void")
-            data[1] = 0
+            pass  # 何もしない
 
         if ebi:
-            print("ebi")
-            data[1] = 30
+            # print("ebi")
+            target = ebi_selector
 
         if nori:
-            print("nori")
-            data[1] = 60
+            # print("nori")
+            target = nori_selector
 
         if yuzu:
-            print("nori")
-            data[1] = 90
+            # print("yuzu")
+            target = yuzu_selector
+
         # time.sleep(10)
 
         udp.send()  # 関数実行
@@ -77,30 +83,35 @@ class GUI_listener(Node):
     def gui_callback(self, gui_msg):
 
         global mode
+        global ebi_selector
+        global nori_selector
+        global yuzu_selector
 
         mode = gui_msg.data[0]
 
-        # forに書き換えたい
-        gui_input[0][0] = gui_msg.data[1]
-        gui_input[0][1] = gui_msg.data[2]
-        gui_input[0][2] = gui_msg.data[3]
-        gui_input[1][0] = gui_msg.data[4]
-        gui_input[1][1] = gui_msg.data[5]
-        gui_input[1][2] = gui_msg.data[6]
-        gui_input[2][0] = gui_msg.data[7]
-        gui_input[2][1] = gui_msg.data[8]
-        gui_input[2][2] = gui_msg.data[9]
-        gui_input[3][0] = gui_msg.data[10]
-        gui_input[3][1] = gui_msg.data[11]
-        gui_input[3][2] = gui_msg.data[12]
-        gui_input[4][0] = gui_msg.data[13]
-        gui_input[4][1] = gui_msg.data[14]
-        gui_input[4][2] = gui_msg.data[15]
-        gui_input[5][0] = gui_msg.data[16]
-        gui_input[5][1] = gui_msg.data[17]
-        gui_input[5][2] = gui_msg.data[18]
+        # GUIからの入力（１次元配列）を２次元配列に格納する
+        for i in range(6):
+            for j in range(3):
+                gui_input[i][j] = gui_msg.data[i * 3 + j + 1]
 
-        print(gui_input)
+        #print(gui_input)
+
+        for e in range(6):
+            if gui_input[e][0] < 3:
+                ebi_selector = e + 1
+                break
+
+        for n in range(6):
+            if gui_input[n][1] < 3:
+                nori_selector = n + 1
+                break
+
+        for y in range(6):
+            if gui_input[y][2] < 3:
+                yuzu_selector = y + 1
+                break
+
+        print(ebi_selector, nori_selector, yuzu_selector)
 
         udp.send()  # 関数実行
 
