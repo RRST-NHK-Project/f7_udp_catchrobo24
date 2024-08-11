@@ -113,6 +113,12 @@ class cr24_GUI(Node):
                                     "EMS", icon="warning_amber", on_click=ems
                                 ),
                             ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                        ),
+                        ft.Row(
+                            [
+                                ft.Text("                     "),
+                            ]
                         ),
                         ft.Row(
                             [
@@ -127,7 +133,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[4],
                                 ft.IconButton(ft.icons.ADD, data=4, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Row(
                             [
@@ -142,7 +149,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[5],
                                 ft.IconButton(ft.icons.ADD, data=5, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Row(
                             [
@@ -157,7 +165,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[6],
                                 ft.IconButton(ft.icons.ADD, data=6, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Text("      "),
                         ft.Row(
@@ -173,7 +182,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[10],
                                 ft.IconButton(ft.icons.ADD, data=10, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Row(
                             [
@@ -188,7 +198,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[11],
                                 ft.IconButton(ft.icons.ADD, data=11, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Row(
                             [
@@ -203,7 +214,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[12],
                                 ft.IconButton(ft.icons.ADD, data=12, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Text("      "),
                         ft.Row(
@@ -219,7 +231,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[16],
                                 ft.IconButton(ft.icons.ADD, data=16, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Row(
                             [
@@ -234,7 +247,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[17],
                                 ft.IconButton(ft.icons.ADD, data=17, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                         ft.Row(
                             [
@@ -249,7 +263,8 @@ class cr24_GUI(Node):
                                 ),
                                 text[18],
                                 ft.IconButton(ft.icons.ADD, data=18, on_click=increase),
-                            ]
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
                         ),
                     ]
                 )
@@ -258,7 +273,7 @@ class cr24_GUI(Node):
 
         # -------------------------GUI-------------------------#
 
-        ft.app(target=gui_main)  # gui_mainをfletで実行
+        ft.app(port=8000, view=ft.WEB_BROWSER, target=gui_main)  # gui_mainをfletで実行
 
         # self.get_logger().info('Publishing: "%s"' % msg)
 
