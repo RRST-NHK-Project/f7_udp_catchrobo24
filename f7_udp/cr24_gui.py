@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 ## coding: UTF-8
 
+"""
+キャチロボ2024
+GUIに入力された各パックのワークの数を配列としてをPublishする
+"""
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -11,6 +16,7 @@ import numpy as np
 from ultralytics import YOLO
 
 import flet as ft
+import sys
 
 
 msg = Int32MultiArray()
@@ -48,14 +54,12 @@ class cr24_GUI(Node):
         self.timer = self.create_timer(freq, self.timer_callback)
         # self.i = 0
 
-    def timer_callback(self):  # callback for publishing setoshio data
+    def timer_callback(self):
 
         # >>>>>>>>>>>>>>>>>>>>>>Write your code from here>>>>>>>>>>>>>>>>>>>>>>#
         # callbacked every freq[s]
 
         # -------------------------GUI-------------------------#
-
-        # -------------------------Publish-------------------------#
 
         def gui_main(page: ft.Page):
             page.title = "CR24_Control_Panel"  # タイトル
@@ -63,6 +67,8 @@ class cr24_GUI(Node):
             page.window_height = 600  # 高さ
             page.bgcolor = ft.colors.RED_100
             global text
+
+            # -------------------------GUI Callback-------------------------#
 
             def mode_change(e):
                 global mode
@@ -77,6 +83,7 @@ class cr24_GUI(Node):
 
             def ems(e):
                 page.window.destroy()
+                sys.exit()
 
             def increase(e):
                 i = e.control.data
@@ -92,15 +99,19 @@ class cr24_GUI(Node):
                 e.page.update()
                 self.publisher_.publish(msg)
 
-            # 部品を配置する
+            # -------------------------GUI Callback-------------------------#
+
+            # -------------------------GUI Object-------------------------#
             page.add(
                 ft.Column(
                     [
                         ft.Row(
                             [
                                 ft.ElevatedButton("mode", on_click=mode_change),
-                                ft.Text("          "),
-                                ft.ElevatedButton("EMS", icon="warning_amber"),
+                                ft.Text("                     "),
+                                ft.ElevatedButton(
+                                    "EMS", icon="warning_amber", on_click=ems
+                                ),
                             ],
                         ),
                         ft.Row(
@@ -243,14 +254,13 @@ class cr24_GUI(Node):
                     ]
                 )
             )
+            # -------------------------GUI Object-------------------------#
 
-        ft.app(target=gui_main)
+        # -------------------------GUI-------------------------#
+
+        ft.app(target=gui_main)  # gui_mainをfletで実行
 
         # self.get_logger().info('Publishing: "%s"' % msg)
-
-        # -------------------------End-------------------------#
-
-    # -------------------------End-------------------------#
 
     # >>>>>>>>>>>>>>>>>>>>>>End>>>>>>>>>>>>>>>>>>>>>>#
 

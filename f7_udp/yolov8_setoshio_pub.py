@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+## coding: UTF-8
+
+"""
+キャチロボ2024
+3種類のワークを判別しX座標が小さい順に配列に格納、Publishする
+"""
+
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
@@ -18,9 +26,9 @@ ov_model = YOLO(
 )  # 絶対パス
 
 # Webカメラの設定
-cap = cv2.VideoCapture(0)  # builtin_cam:0 ext_cam:2
-#cap.set(cv2.CAP_PROP_BRIGHTNESS, 16)
-#cap.set(cv2.CAP_PROP_EXPOSURE, -16)  # 0 ~ -16
+cap = cv2.VideoCapture(2)  # builtin_cam:0 ext_cam:2
+# cap.set(cv2.CAP_PROP_BRIGHTNESS, 16)
+# cap.set(cv2.CAP_PROP_EXPOSURE, -16)  # 0 ~ -16
 
 msg = Int32MultiArray()
 
@@ -44,30 +52,11 @@ class setoshio_pub(Node):
 
         if success:
             # Run YOLOv8 inference on the frame
-            #frame = cv2.convertScaleAbs(frame, alpha=0.2,beta=0)#画像の調整
+            # frame = cv2.convertScaleAbs(frame, alpha=0.2,beta=0)#画像の調整
             results = ov_model.predict(
                 frame, verbose=False
             )  # verbose: Option for show output to terminal
             annotatedFrame = results[0].plot()
-
-            """
-            # 後のオブジェクト名出力などのため
-            names = results[0].names
-            classes = results[0].boxes.cls
-            boxes = results[0].boxes
-            
-            
-            for box, cls in zip(boxes, classes):
-                name = names[int(cls)]
-                #x1 =  boxes[int[box]]
-                x1, y1, x2, y2 = [int(i) for i in box.xyxy[0]]
-                #print(f"Box coordinates: {box}, Object: {class_name}")
-                print(str(name)+str(x1))
-            
-            for box in boxes:
-                print(str(box.xyxy[0]) + str(box.xyxy[1]))   
-            # Display the annotated frame
-            """
 
             # cls_and_box = list(zip(np.int32(results[0].boxes.cls), np.int32(results[0].boxes.xyxy)))
             try:
@@ -80,7 +69,7 @@ class setoshio_pub(Node):
                 cls_and_x1_sorted = sorted(
                     cls_and_x1, key=lambda x: x[1]
                 )  # sort with x1
-                #print(cls_and_x1_sorted)
+                # print(cls_and_x1_sorted)
 
                 # -------------------------Publish-------------------------#
                 """
@@ -109,14 +98,12 @@ class setoshio_pub(Node):
 
                 # print(str(cls_and_x1_sorted))
             except IndexError as e:  # To avoid IndexError stops program
-                #print(e)
+                # print(e)
                 msg.data = [-1, -1, -1, -1, -1]
                 self.publisher_.publish(msg)
 
             cv2.imshow("YOLOv8", annotatedFrame)
             # print(str(results[0].boxes))
-
-            # setoshio_pub.yolov8_callback() #callback to publish setoshio data
 
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord("q"):

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 ## coding: UTF-8
 
+"""
+キャチロボ2024
+YOLOからの情報とGUIからの入力をもとにシューティングコンベアの位置決めを行う
+"""
+
 import rclpy
 from rclpy.node import Node
 from rclpy.executors import SingleThreadedExecutor
@@ -45,6 +50,9 @@ class Listener(Node):
     def yolo_callback(self, yolo_msg):
 
         global target
+        global ebi_selector
+        global nori_selector
+        global yuzu_selector
 
         void = yolo_msg.data[0] == -1
         ebi = yolo_msg.data[0] == 0
@@ -65,6 +73,8 @@ class Listener(Node):
         if yuzu:
             # print("yuzu")
             target = yuzu_selector
+            
+        print(target)
 
         # time.sleep(10)
 
@@ -94,7 +104,10 @@ class GUI_listener(Node):
             for j in range(3):
                 gui_input[i][j] = gui_msg.data[i * 3 + j + 1]
 
-        #print(gui_input)
+        # print(gui_input)        
+        global ebi_selector
+        global nori_selector
+        global yuzu_selector
 
         for e in range(6):
             if gui_input[e][0] < 3:
@@ -111,7 +124,7 @@ class GUI_listener(Node):
                 yuzu_selector = y + 1
                 break
 
-        print(ebi_selector, nori_selector, yuzu_selector)
+        #print(ebi_selector, nori_selector, yuzu_selector)
 
         udp.send()  # 関数実行
 
@@ -119,7 +132,8 @@ class GUI_listener(Node):
 class udpsend:
     def __init__(self):
 
-        SrcIP = "192.168.128.182"  # 送信元IP 家
+        # SrcIP = "192.168.128.182"  # 送信元IP 家
+        SrcIP = "192.168.2.130"  # 送信元IP 家2
         # SrcIP = "192.168.8.195"  # 送信元IP SFT1200
         SrcPort = 4000  # 送信元ポート番号
         self.SrcAddr = (SrcIP, SrcPort)  # アドレスをtupleに格納
