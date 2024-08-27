@@ -60,7 +60,10 @@ class Listener(Node):
         yuzu = yolo_msg.data[0] == 2
 
         if void:
-            pass  # 何もしない
+            # pass   何もしない
+            data[2] = 1
+        else:
+            data[2] = 0
 
         if ebi:
             # print("ebi")

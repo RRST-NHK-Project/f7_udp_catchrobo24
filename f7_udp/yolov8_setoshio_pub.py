@@ -17,12 +17,12 @@ from ultralytics import YOLO
 
 
 # Load the YOLOv8 model
-model = YOLO("/home/ubuntu/ros2_ws/src/f7_udp/f7_udp/bestv2.pt")  # 絶対パス
+model = YOLO("/home/ubuntu/ros2_ws/src/f7_udp/f7_udp/bestv6.pt")  # 絶対パス
 # Export the model
 model.export(format="openvino")  # creates 'yolov8n_openvino_model/'
 # Load the exported OpenVINO model
 ov_model = YOLO(
-    "/home/ubuntu/ros2_ws/src/f7_udp/f7_udp/bestv2_openvino_model/"
+    "/home/ubuntu/ros2_ws/src/f7_udp/f7_udp/bestv6_openvino_model/"
 )  # 絶対パス
 
 # Webカメラの設定
