@@ -27,6 +27,9 @@ setup(
         'cr24_main = f7_udp.cr24_main:main',
         'cr24_test = f7_udp.cr24_test:main',
         'cr24_gui = f7_udp.cr24_gui:main',
+        'cr24_main_manual = f7_udp.cr24_manual:main',
+        'cr24_main_manual2 = f7_udp.cr24_manual2:main',
+        'cr24_pos = f7_udp.cr24_pos:main',
         ],
     },
 )

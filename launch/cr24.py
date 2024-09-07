@@ -7,14 +7,12 @@ def generate_launch_description():
             package='joy',
             executable='joy_node',
             name='joy',
-            output='screen',
             emulate_tty=True
         ),
         Node(
             package='f7_udp',
             executable='setoshio',
             name='main',
-            output='screen',
             emulate_tty=True
         ),
         Node(
@@ -28,7 +26,12 @@ def generate_launch_description():
             package='f7_udp',
             executable='cr24_gui',
             name='gui',
-            output='screen',
+            emulate_tty=True
+        ),
+        Node(
+            package='f7_udp',
+            executable='cr24_main_manual2',
+            name='manual',
             emulate_tty=True
         ),
     ])

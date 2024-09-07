@@ -17,6 +17,7 @@ from std_msgs.msg import Int32MultiArray
 from socket import *
 import time
 import math
+import pyfiglet
 
 data = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # モタドラ用のPWMを想定
 fth = 0
@@ -30,6 +31,7 @@ deadzone = 0.3  # adjust DS4 deadzone
 
 gui_input = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 mode = 0
+standby = 0
 
 ebi_selector = 1  # えびのシュートはどこまで完了しているか
 nori_selector = 1  # のりのシュートはどこまで完了しているか
@@ -45,11 +47,14 @@ class Listener(Node):
         self.sub1 = self.create_subscription(
             Int32MultiArray, "setoshio_pub", self.yolo_callback, 10
         )
+        print(pyfiglet.figlet_format("RRST"))
+        print(pyfiglet.figlet_format("YOLO Mode"))
         self.sub1  # prevent unused variable warning
 
-    def yolo_callback(self, yolo_msg):
+    def yolo_callback(self, yolo_msg):  # YOLOからの入力を処理する関数
 
         global target
+        global mode
         global ebi_selector
         global nori_selector
         global yuzu_selector
@@ -59,11 +64,15 @@ class Listener(Node):
         nori = yolo_msg.data[0] == 1
         yuzu = yolo_msg.data[0] == 2
 
-        if void:
-            # pass   何もしない
-            data[2] = 1
+        if void == 1:
+            if mode == 0:
+                data[2] = 1
+            if mode == 1:
+                data[2] = 2
         else:
             data[2] = 0
+
+        #print(data[2])
 
         if ebi:
             # print("ebi")
@@ -77,26 +86,61 @@ class Listener(Node):
             # print("yuzu")
             target = yuzu_selector
 
-        if target == 1:
-            data[1] = 30
+        r_1 = 45
+        r_2 = 90
 
-        if target == 2:
-            data[1] = 0
+        if mode == 0:
+            if target == 1:
+                data[1] = 15
+                data[3] = r_2
 
-        if target == 3:
-            data[1] = -30
+            if target == 2:
+                data[1] = 0
+                data[3] = r_1
 
-        if target == 4:
-            data[1] = 30
+            if target == 3:
+                data[1] = -15
+                data[3] = r_2
 
-        if target == 5:
-            data[1] = 0
+            if target == 4:
+                data[1] = 15
+                data[3] = r_1
 
-        if target == 6:
-            data[1] = -30
+            if target == 5:
+                data[1] = 0
+                data[3] = r_2
 
-        print(target)
+            if target == 6:
+                data[1] = -15
+                data[3] = r_1
 
+        if mode == 1:
+            if target == 1:
+                data[1] = 15
+                data[3] = -1 * r_1
+
+            if target == 2:
+                data[1] = 0
+                data[3] = -1 * r_2
+
+            if target == 3:
+                data[1] = -15
+                data[3] = -1 * r_1
+
+            if target == 4:
+                data[1] = 15
+                data[3] = -1 * r_2
+
+            if target == 5:
+                data[1] = 0
+                data[3] = -1 * r_1
+
+            if target == 6:
+                data[1] = -15
+                data[3] = -1 * r_2
+
+        # print(target)
+        # print(mode)
         # time.sleep(10)
 
         udp.send()  # 関数実行
@@ -111,7 +155,7 @@ class GUI_listener(Node):
         )
         self.sub2  # prevent unused variable warning
 
-    def gui_callback(self, gui_msg):
+    def gui_callback(self, gui_msg):  # GUIからの入力を処理する関数
 
         global mode
         global ebi_selector
@@ -168,7 +212,7 @@ class udpsend:
 
     def send(self):
 
-        # print(data[1], data[2], data[3], data[4])
+        # print(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
 
         str_data = (
             str(data[1])
@@ -204,6 +248,7 @@ class udpsend:
 
 
 udp = udpsend()  # クラス呼び出し
+
 
 
 def main(args=None):

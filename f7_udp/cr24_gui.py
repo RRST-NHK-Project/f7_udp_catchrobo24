@@ -82,8 +82,7 @@ class cr24_GUI(Node):
                 self.publisher_.publish(msg)
 
             def ems(e):
-                page.window.destroy()
-                sys.exit()
+                pass
 
             def increase(e):
                 i = e.control.data
