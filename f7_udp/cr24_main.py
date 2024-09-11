@@ -39,8 +39,10 @@ yuzu_selector = 1  # ゆずのシュートはどこまで完了しているか
 
 target = 1  # どのパックにワークをシュートするか1~6
 
+init = False
 
-class Listener(Node):
+
+class YOLO_Listener(Node):
 
     def __init__(self):
         super().__init__("Setoshio_handler")
@@ -49,6 +51,7 @@ class Listener(Node):
         )
         print(pyfiglet.figlet_format("RRST"))
         print(pyfiglet.figlet_format("YOLO Mode"))
+        print("Press PS to start")
         self.sub1  # prevent unused variable warning
 
     def yolo_callback(self, yolo_msg):  # YOLOからの入力を処理する関数
@@ -91,27 +94,27 @@ class Listener(Node):
 
         if mode == 0:
             if target == 1:
-                data[1] = 15
+                data[1] = -15
                 data[3] = 1
 
             if target == 2:
-                data[1] = 0
+                data[1] = -15
                 data[3] = 2
 
             if target == 3:
-                data[1] = -15
-                data[3] = 1
-
-            if target == 4:
-                data[1] = 15
-                data[3] = 2
-
-            if target == 5:
                 data[1] = 0
                 data[3] = 1
 
+            if target == 4:
+                data[1] = 0
+                data[3] = 2
+
+            if target == 5:
+                data[1] = 15
+                data[3] = 1
+
             if target == 6:
-                data[1] = -15
+                data[1] = 15
                 data[3] = 2
 
         if mode == 1:
@@ -120,19 +123,19 @@ class Listener(Node):
                 data[3] = -2
 
             if target == 2:
-                data[1] = 0
-                data[3] = -1
-
-            if target == 3:
-                data[1] = -15
-                data[3] = -2
-
-            if target == 4:
                 data[1] = 15
                 data[3] = -1
 
-            if target == 5:
+            if target == 3:
                 data[1] = 0
+                data[3] = -2
+
+            if target == 4:
+                data[1] = 0
+                data[3] = -1
+
+            if target == 5:
+                data[1] = -15
                 data[3] = -2
 
             if target == 6:
@@ -141,13 +144,14 @@ class Listener(Node):
 
         # print(target)
         # print(mode)
-        print(data[3])
+        # print(data[3])
         # time.sleep(10)
 
-        udp.send()  # 関数実行
+        if init == True:
+            udp.send()  # 関数実行
 
 
-class GUI_listener(Node):
+class GUI_Listener(Node):
 
     def __init__(self):
         super().__init__("gui_handler")
@@ -192,7 +196,108 @@ class GUI_listener(Node):
 
         # print(ebi_selector, nori_selector, yuzu_selector)
 
-        udp.send()  # 関数実行
+        if init == True:
+            udp.send()  # 関数実行
+
+
+class DS4_Listener(Node):
+
+    def __init__(self):
+        super().__init__("ds4_handler")
+        self.subscription = self.create_subscription(Joy, "joy", self.ds4_callback, 10)
+        self.subscription  # prevent unused variable warning
+
+    def ds4_callback(self, ps4_msg):
+        """
+        LS_X = (-1) * ps4_msg.axes[0]
+        LS_Y = ps4_msg.axes[1]
+        RS_X = (-1) * ps4_msg.axes[2]
+        RS_Y = ps4_msg.axes[5]
+
+        print(LS_X, LS_Y, RS_X, RS_Y)
+        """
+        CROSS = ps4_msg.buttons[1]
+        CIRCLE = ps4_msg.buttons[2]
+        TRIANGLE = ps4_msg.buttons[3]
+        SQUARE = ps4_msg.buttons[0]
+
+        LEFT = ps4_msg.axes[12] == 1.0
+        RIGHT = ps4_msg.axes[12] == -1.0
+        UP = ps4_msg.axes[13] == 1.0
+        DOWN = ps4_msg.axes[13] == -1.0
+
+        L1 = ps4_msg.buttons[4]
+        R1 = ps4_msg.buttons[5]
+
+        L2 = ps4_msg.buttons[6]
+        R2 = ps4_msg.buttons[7]
+
+        SHARE = ps4_msg.buttons[8]
+        OPTION = ps4_msg.buttons[9]
+        PS = ps4_msg.buttons[12]
+
+        L3 = ps4_msg.buttons[10]
+        R3 = ps4_msg.buttons[11]
+
+        global init
+
+        """
+        if SQUARE  == 1:
+            print("SAUARE ") 
+        
+        if CROSS == 1:
+            print("CROSS") 
+        
+        if  CIRCLE== 1:
+            print("CIRCLE") 
+        
+        if  TRIANGLE== 1:
+            print("TRIANGLE") 
+        
+        if  UP == 1:
+            print("UP") 
+        
+        if  DOWN == 1:
+            print("DOWN") 
+        
+        if  LEFT == 1:
+            print("LEFT") 
+        
+        if  RIGHT == 1:
+            print("RIGHT") 
+        
+        if  L1 == 1:
+            print("L1") 
+        
+        if  R1 == 1:
+            print("R1") 
+        
+        if  L2 == 1:
+            print("L2") 
+        
+        if  R2 == 1:
+            print("R2") 
+        
+        if  L3 == 1:
+            print("L3") 
+        
+        if  R3 == 1:
+            print("R3") 
+        
+        if  SHARE == 1:
+            print("SHARE") 
+        
+        if  OPTION == 1:
+            print("OPTION") 
+        
+        if  PS == 1:
+            print("PS") 
+        """
+
+        if PS:
+            init = True
+            print(pyfiglet.figlet_format("Start"))
+            time.sleep(0.5)
 
 
 class udpsend:
@@ -255,19 +360,22 @@ def main(args=None):
     rclpy.init(args=args)
     exec = SingleThreadedExecutor()
 
-    listener = Listener()
-    gui_listener = GUI_listener()
+    yolo_listener = YOLO_Listener()
+    gui_listener = GUI_Listener()
+    ds4_listener = DS4_Listener()
 
-    exec.add_node(listener)
+    exec.add_node(yolo_listener)
     exec.add_node(gui_listener)
+    exec.add_node(ds4_listener)
 
     exec.spin()
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
-    listener.destroy_node()
+    yolo_listener.destroy_node()
     gui_listener.destroy_node()
+    ds4_listener.destroy_node()
     exec.shutdown()
 
 
