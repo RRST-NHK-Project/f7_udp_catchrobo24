@@ -72,7 +72,7 @@ class Listener(Node):
         else:
             data[2] = 0
 
-        #print(data[2])
+        # print(data[2])
 
         if ebi:
             # print("ebi")
@@ -86,61 +86,62 @@ class Listener(Node):
             # print("yuzu")
             target = yuzu_selector
 
-        r_1 = 45
-        r_2 = 90
+        r_1 = 200
+        r_2 = 150
 
         if mode == 0:
             if target == 1:
                 data[1] = 15
-                data[3] = r_2
+                data[3] = 1
 
             if target == 2:
                 data[1] = 0
-                data[3] = r_1
+                data[3] = 2
 
             if target == 3:
                 data[1] = -15
-                data[3] = r_2
+                data[3] = 1
 
             if target == 4:
                 data[1] = 15
-                data[3] = r_1
+                data[3] = 2
 
             if target == 5:
                 data[1] = 0
-                data[3] = r_2
+                data[3] = 1
 
             if target == 6:
                 data[1] = -15
-                data[3] = r_1
+                data[3] = 2
 
         if mode == 1:
             if target == 1:
                 data[1] = 15
-                data[3] = -1 * r_1
+                data[3] = -2
 
             if target == 2:
                 data[1] = 0
-                data[3] = -1 * r_2
+                data[3] = -1
 
             if target == 3:
                 data[1] = -15
-                data[3] = -1 * r_1
+                data[3] = -2
 
             if target == 4:
                 data[1] = 15
-                data[3] = -1 * r_2
+                data[3] = -1
 
             if target == 5:
                 data[1] = 0
-                data[3] = -1 * r_1
+                data[3] = -2
 
             if target == 6:
                 data[1] = -15
-                data[3] = -1 * r_2
+                data[3] = -1
 
         # print(target)
         # print(mode)
+        print(data[3])
         # time.sleep(10)
 
         udp.send()  # 関数実行
@@ -248,7 +249,6 @@ class udpsend:
 
 
 udp = udpsend()  # クラス呼び出し
-
 
 
 def main(args=None):

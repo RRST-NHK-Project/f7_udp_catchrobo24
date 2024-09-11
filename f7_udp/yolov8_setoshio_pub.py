@@ -54,7 +54,7 @@ class setoshio_pub(Node):
             # Run YOLOv8 inference on the frame
             # frame = cv2.convertScaleAbs(frame, alpha=0.2,beta=0)#画像の調整
             results = ov_model.predict(
-                frame, verbose=False
+                frame, verbose=False, conf=0.3
             )  # verbose: Option for show output to terminal
             annotatedFrame = results[0].plot()
 

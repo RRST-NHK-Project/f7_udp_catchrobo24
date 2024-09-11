@@ -24,23 +24,23 @@ msg.data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 text = [
     0,
     ft.Text(value="0", size=25, color=ft.colors.RED),
-    ft.Text(value="0", size=25, color=ft.colors.BLUE),
-    ft.Text(value="0", size=25, color=ft.colors.WHITE),
+    ft.Text(value="0", size=25, color=ft.colors.GREEN),
+    ft.Text(value="0", size=25, color=ft.colors.YELLOW),
     ft.Text(value="0", size=25, color=ft.colors.RED),
-    ft.Text(value="0", size=25, color=ft.colors.BLUE),
-    ft.Text(value="0", size=25, color=ft.colors.WHITE),
+    ft.Text(value="0", size=25, color=ft.colors.GREEN),
+    ft.Text(value="0", size=25, color=ft.colors.YELLOW),
     ft.Text(value="0", size=25, color=ft.colors.RED),
-    ft.Text(value="0", size=25, color=ft.colors.BLUE),
-    ft.Text(value="0", size=25, color=ft.colors.WHITE),
+    ft.Text(value="0", size=25, color=ft.colors.GREEN),
+    ft.Text(value="0", size=25, color=ft.colors.YELLOW),
     ft.Text(value="0", size=25, color=ft.colors.RED),
-    ft.Text(value="0", size=25, color=ft.colors.BLUE),
-    ft.Text(value="0", size=25, color=ft.colors.WHITE),
+    ft.Text(value="0", size=25, color=ft.colors.GREEN),
+    ft.Text(value="0", size=25, color=ft.colors.YELLOW),
     ft.Text(value="0", size=25, color=ft.colors.RED),
-    ft.Text(value="0", size=25, color=ft.colors.BLUE),
-    ft.Text(value="0", size=25, color=ft.colors.WHITE),
+    ft.Text(value="0", size=25, color=ft.colors.GREEN),
+    ft.Text(value="0", size=25, color=ft.colors.YELLOW),
     ft.Text(value="0", size=25, color=ft.colors.RED),
-    ft.Text(value="0", size=25, color=ft.colors.BLUE),
-    ft.Text(value="0", size=25, color=ft.colors.WHITE),
+    ft.Text(value="0", size=25, color=ft.colors.GREEN),
+    ft.Text(value="0", size=25, color=ft.colors.YELLOW),
 ]
 mode = False
 
@@ -272,8 +272,8 @@ class cr24_GUI(Node):
 
         # -------------------------GUI-------------------------#
 
-        ft.app(port=8000, view=ft.WEB_BROWSER, target=gui_main)  # gui_mainをfletで実行
-
+        #ft.app(port=8000, view=ft.WEB_BROWSER, target=gui_main)  # gui_mainをfletで実行(ブラウザ)
+        ft.app(target=gui_main)
         # self.get_logger().info('Publishing: "%s"' % msg)
 
     # >>>>>>>>>>>>>>>>>>>>>>End>>>>>>>>>>>>>>>>>>>>>>#

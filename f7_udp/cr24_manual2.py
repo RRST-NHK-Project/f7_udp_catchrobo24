@@ -129,7 +129,7 @@ class Listener(Node):
         R1:
         R2:押しっぱで全部速くなる
         """
-        print("ok")
+        #print("ok")
         udp.send()  # 関数実行
 
 
