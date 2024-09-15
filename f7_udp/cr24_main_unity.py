@@ -18,7 +18,6 @@ from socket import *
 import time
 import math
 import pyfiglet
-#import serial
 
 data = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # モタドラ用のPWMを想定
 fth = 0
@@ -42,13 +41,6 @@ target = 1  # どのパックにワークをシュートするか1~6
 
 init = False
 
-"""
-ser = serial.Serial()
-ser.port = "/dev/ttyACM0"
-ser.baudrate = 115200
-ser.setDTR(False)
-ser.open()
-"""
 
 class YOLO_Listener(Node):
 
@@ -76,7 +68,6 @@ class YOLO_Listener(Node):
         yuzu = yolo_msg.data[0] == 2
 
         if void == 1:
-            #ser.write(b"0")
             if mode == 0:
                 data[2] = 1
             if mode == 1:
@@ -88,17 +79,14 @@ class YOLO_Listener(Node):
 
         if ebi:
             # print("ebi")
-            #ser.write(b"1")
             target = ebi_selector
 
         if nori:
             # print("nori")
-            #ser.write(b"2")
             target = nori_selector
 
         if yuzu:
             # print("yuzu")
-            #ser.write(b"3")
             target = yuzu_selector
 
         r_1 = 200
@@ -126,7 +114,7 @@ class YOLO_Listener(Node):
                 data[3] = 1
 
             if target == 6:
-                data[1] = -15
+                data[1] = 15
                 data[3] = 2
 
         if mode == 1:
@@ -156,7 +144,7 @@ class YOLO_Listener(Node):
 
         # print(target)
         # print(mode)
-        #print(data[1])
+        # print(data[3])
         # time.sleep(10)
 
         if init == True:
@@ -310,6 +298,23 @@ class DS4_Listener(Node):
             init = True
             print(pyfiglet.figlet_format("Start"))
             time.sleep(0.5)
+            
+            
+class Unity_Listener(Node):
+
+    def __init__(self):
+        super().__init__("Unity_handler")
+        self.sub3 = self.create_subscription(
+            Int32MultiArray, "hello_from_Unity", self.unity_callback, 10
+        )
+        self.sub3  # prevent unused variable warning
+
+    def unity_callback(self, unity_msg):  
+        
+        BUTTON1 = unity_msg.data[1] == 1
+        
+        if BUTTON1:
+            print("BUTTON1")
 
 
 class udpsend:
@@ -352,8 +357,6 @@ class udpsend:
         # str_data = (str(data[1])+str(data[2])+str(data[3])+str(data[4])+str(data[5]))
         send_data = str_data.encode("utf-8")  # バイナリに変換
         # binary = data.to_bytes(4,'big')
-        
-        #print(data[1])
 
         self.udpClntSock.sendto(send_data, self.DstAddr)  # 宛先アドレスに送信
 
@@ -365,7 +368,6 @@ class udpsend:
         data[6] = 0
         data[7] = 0
         data[8] = 0
-        
 
 
 udp = udpsend()  # クラス呼び出し
@@ -378,10 +380,12 @@ def main(args=None):
     yolo_listener = YOLO_Listener()
     gui_listener = GUI_Listener()
     ds4_listener = DS4_Listener()
+    unity_listener = Unity_Listener()
 
     exec.add_node(yolo_listener)
     exec.add_node(gui_listener)
     exec.add_node(ds4_listener)
+    exec.add_node(unity_listener)
 
     exec.spin()
 
@@ -391,8 +395,8 @@ def main(args=None):
     yolo_listener.destroy_node()
     gui_listener.destroy_node()
     ds4_listener.destroy_node()
+    unity_listener.destroy_node()
     exec.shutdown()
-    #ser.close
 
 
 if __name__ == "__main__":

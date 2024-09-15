@@ -7,7 +7,7 @@ from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 from rclpy.executors import SingleThreadedExecutor
-
+from std_msgs.msg import Int32MultiArray
 
 from socket import *
 import time
@@ -67,46 +67,45 @@ class Listener(Node):
         rad = math.atan2(LS_Y, LS_X)
 
         if UP:
-            data[7] = -80 # 上押したらハンド軸前進
+            data[7] = -30  # 上押したらハンド軸前進
         if DOWN:
-            data[7] = 80 # 下押したらハンド軸後退
-        
-        if RIGHT:
-            data[5] = 60
+            data[7] = 30  # 下押したらハンド軸後退
+
         if LEFT:
-            data[5] = -60
+            data[5] = 30
+        if RIGHT:
+            data[5] = -30
 
         if TRIANGLE:
-            data[1] = 80
+            data[1] = 30
         if CROSS:
-            data[1] = -80
+            data[1] = -30
 
         if CIRCLE:
             data[3] = 1
-            
         if SQUARE:
-            data[3] = 2
+            data[3] = 0
 
         if L1:
-            data[2] = -70
+            data[2] = -30
         if L2:
-            data[2] = 70
+            data[2] = 30
 
         if R2:
             if UP:
-                data[7] = -30  # 上押したらハンド軸前進
+                data[7] = -60  # 上押したらハンド軸前進
             if DOWN:
-                data[7] = 30 # 下押したらハンド軸後退
+                data[7] = 60  # 下押したらハンド軸後退
 
-            if RIGHT:
-                data[5] = 30
             if LEFT:
-                data[5] = -30
+                data[5] = 60
+            if RIGHT:
+                data[5] = -60
 
             if TRIANGLE:
-                data[1] = 30
+                data[1] = 60
             if CROSS:
-                data[1] = -30
+                data[1] = -60
 
             if CIRCLE:
                 data[3] = 1
@@ -114,9 +113,9 @@ class Listener(Node):
                 data[3] = 0
 
             if L1:
-                data[2] = -30
+                data[2] = -60
             if L2:
-                data[2] = 30
+                data[2] = 60
 
         """
         UP:ハンド前進
@@ -124,7 +123,7 @@ class Listener(Node):
         LEFT:左移動
         RIGHT:右移動
         CROSS:ハンド軸後退
-        CIRCLE:ハンド落とす 
+        CIRCLE: 
         TRIANGLE: ハンド軸前進
         SQUARE: 
         L1:上昇
@@ -132,7 +131,58 @@ class Listener(Node):
         R1:
         R2:押しっぱで全部速くなる
         """
-        #print("ok")
+        # print("ok")
+        udp.send()  # 関数実行
+
+
+class Unity_Listener(Node):
+
+    def __init__(self):
+        super().__init__("Unity_handler")
+        self.sub3 = self.create_subscription(
+            Int32MultiArray, "hello_from_Unity", self.unity_callback, 10
+        )
+        self.sub3  # prevent unused variable warning
+
+    def unity_callback(self, unity_msg):
+
+        BUTTON1 = unity_msg.data[1] == 1
+        BUTTON2 = unity_msg.data[2] == 1
+        BUTTON3 = unity_msg.data[3] == 1
+        BUTTON4 = unity_msg.data[4] == 1
+        BUTTON5 = unity_msg.data[5] == 1
+        BUTTON6 = unity_msg.data[6] == 1
+        BUTTON7 = unity_msg.data[7] == 1
+        BUTTON8 = unity_msg.data[8] == 1
+        BUTTON9 = unity_msg.data[9] == 1
+        BUTTON10 = unity_msg.data[10] == 1
+
+        if BUTTON5:
+            data[7] = -80  # 上押したらハンド軸前進
+        if BUTTON2:
+            data[7] = 80  # 下押したらハンド軸後退
+
+        if BUTTON8:
+            data[5] = 60
+        if BUTTON7:
+            data[5] = -60
+
+        if BUTTON6:
+            data[1] = 80
+        if BUTTON3:
+            data[1] = -80
+
+        if BUTTON9:
+            data[3] = 1
+
+        if BUTTON10:
+            data[3] = 2
+
+        if BUTTON4:
+            data[2] = -70
+        if BUTTON1:
+            data[2] = 70
+
         udp.send()  # 関数実行
 
 
@@ -151,8 +201,6 @@ class udpsend:
         self.udpClntSock.bind(self.SrcAddr)  # 送信元アドレスでバインド
 
     def send(self):
-
-        print(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
 
         str_data = (
             str(data[1])
@@ -175,6 +223,8 @@ class udpsend:
         send_data = str_data.encode("utf-8")  # バイナリに変換
         # binary = data.to_bytes(4,'big')
 
+        print(data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8])
+
         self.udpClntSock.sendto(send_data, self.DstAddr)  # 宛先アドレスに送信
 
         data[1] = 0
@@ -193,16 +243,19 @@ udp = udpsend()  # クラス呼び出し
 def main(args=None):
     rclpy.init(args=args)
 
-    listener = Listener()
+    exec = SingleThreadedExecutor()
 
-    rclpy.spin(listener)
+    listener = Listener()
+    unity_listener = Unity_Listener()
+
+    exec.add_node(listener)
+    exec.add_node(unity_listener)
+
+    exec.spin()
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
     listener.destroy_node()
-    rclpy.shutdown()
-
-
-if __name__ == "__main__":
-    main()
+    unity_listener.destroy_node()
+    exec.shutdown()

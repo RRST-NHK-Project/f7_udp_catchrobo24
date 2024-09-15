@@ -30,6 +30,9 @@ setup(
         'cr24_main_manual = f7_udp.cr24_manual:main',
         'cr24_main_manual2 = f7_udp.cr24_manual2:main',
         'cr24_pos = f7_udp.cr24_pos:main',
+        'cr24_wlcam = f7_udp.cr24_yolo_wireless:main',
+        'cr24_main_apk = f7_udp.cr24_main_unity:main',
+        'cr24_manual2_apk = f7_udp.cr24_manual2_unity:main',
         ],
     },
 )

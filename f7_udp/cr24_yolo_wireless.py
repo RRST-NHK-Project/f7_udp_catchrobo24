@@ -10,6 +10,8 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 from std_msgs.msg import Int32MultiArray
+from sensor_msgs.msg import CompressedImage
+from rclpy.executors import SingleThreadedExecutor
 
 import cv2
 import numpy as np
@@ -26,11 +28,25 @@ ov_model = YOLO(
 )  # 絶対パス
 
 # Webカメラの設定
-cap = cv2.VideoCapture(2)  # builtin_cam:0 ext_cam:2
+#cap = cv2.VideoCapture(2)  # builtin_cam:0 ext_cam:2
 # cap.set(cv2.CAP_PROP_BRIGHTNESS, 16)
 # cap.set(cv2.CAP_PROP_EXPOSURE, -16)  # 0 ~ -16
 
 msg = Int32MultiArray()
+cam_msg_gb = CompressedImage()
+
+class CAM_Listener(Node):
+
+    def __init__(self):
+        super().__init__("cam_listner")
+        self.subscription = self.create_subscription(CompressedImage, "/image_raw/compressed", self.cam_callback, 10)
+        self.subscription  # prevent unused variable warning
+
+    def cam_callback(self, cam_msg):
+        
+        global cam_msg_gb
+        
+        cam_msg_gb = cam_msg
 
 
 class setoshio_pub(Node):
@@ -48,13 +64,15 @@ class setoshio_pub(Node):
         # callbacked every freq[s]
 
         # -------------------------YOLOv8-------------------------#
-        success, frame = cap.read()
+        success = True 
+        
+        frame = cam_msg_gb
 
         if success:
             # Run YOLOv8 inference on the frame
             # frame = cv2.convertScaleAbs(frame, alpha=0.2,beta=0)#画像の調整
             results = ov_model.predict(
-                frame, verbose=False, conf=0.6
+                frame, verbose=False, conf=0.3
             )  # verbose: Option for show output to terminal
             annotatedFrame = results[0].plot()
 
@@ -108,7 +126,7 @@ class setoshio_pub(Node):
             # Break the loop if 'q' is pressed
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 # Release the video capture object and close the display window
-                cap.release()
+                cam_msg_gb.release()
                 cv2.destroyAllWindows()
                 # break
 
@@ -119,13 +137,22 @@ class setoshio_pub(Node):
 
 def main(args=None):
     rclpy.init(args=args)
+
+    exec = SingleThreadedExecutor()
+    
     setoshio_publisher = setoshio_pub()
-    rclpy.spin(setoshio_publisher)
+    cam_listener = CAM_Listener()
+    
+    exec.add_node(setoshio_publisher)
+    exec.add_node(cam_listener)
+    
+    exec.spin()
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
     setoshio_publisher.destroy_node()
-    rclpy.shutdown()
+    cam_listener.destroy_node()
+    exec.shutdown()
 
 
 if __name__ == "__main__":
